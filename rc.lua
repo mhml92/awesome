@@ -98,7 +98,8 @@ myawesomemenu = {
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor_cmd .. " " .. awesome.conffile },
    { "restart", awesome.restart },
-   { "quit", awesome.quit }
+   { "quit", awesome.quit },
+   { "shutdown", terminal .. " -e sudo shutdown -P now"}
 }
 
 mymainmenu = awful.menu({ 
@@ -124,9 +125,22 @@ mytextclock = awful.widget.textclock()
 -- memory usage
 memimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/mem.png")
 memimg:set_resize(false)
-memwidget = wibox.widget.textbox()
-vicious.register(memwidget, vicious.widgets.mem, "$1%")
-memwidget = wibox.layout.constraint(memwidget, "exact", 25, nil)
+
+
+memwidget = awful.widget.progressbar() --wibox.widget.textbox()
+memwidget:set_vertical(true)
+memwidget:set_width(3)
+--memwidget:set_border_color("#a1a1a1")
+memwidget:set_color("#a1a1a1")
+memwidget:set_background_color("#353535")
+vicious.register(memwidget, vicious.widgets.mem, "$1")
+memwidget = wibox.layout.margin(memwidget)
+memwidget:set_top(5)
+memwidget:set_bottom(6)
+
+--memwidget = wibox.widget.textbox()
+--vicious.register(memwidget, vicious.widgets.mem, "$1%")
+--memwidget = wibox.layout.constraint(memwidget, "exact", 20, nil)
 
 -- battery
 batimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/bat_empty_01.png")
@@ -148,26 +162,88 @@ netwidget = wibox.widget.textbox()
 vicious.register(
    netwidget, 
    vicious.widgets.net, 
-   '${wlan0 down_mb}/${wlan0 up_mb}', 
-   3
+   '${wlan0 down_mb}/${wlan0 up_mb}'
 )
-netwidget = wibox.layout.constraint(netwidget, "exact", 42, nil)
+netwidget = wibox.layout.constraint(netwidget, "exact", 45, nil)
 
 --volume
 
 volimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/spkr_01.png")
 volimg:set_resize(false)
-volwidget = wibox.widget.textbox()
-vicious.register(volwidget, vicious.widgets.volume, "$1%",1, "Master -D pulse")
-volwidget = wibox.layout.constraint(volwidget, "exact", 25, nil)
+
+--volwidget = wibox.widget.textbox()
+--vicious.register(volwidget, vicious.widgets.volume, "$1%",1, "Master -D pulse")
+--volwidget = wibox.layout.constraint(volwidget, "exact", 25, nil)
+
+
+volwidget = awful.widget.progressbar() --wibox.widget.textbox()
+volwidget:set_vertical(true)
+volwidget:set_width(3)
+--volwidget:set_border_color("#a1a1a1")
+volwidget:set_color("#a1a1a1")
+volwidget:set_background_color("#353535")
+vicious.register(volwidget, vicious.widgets.volume, "$1",1, "Master -D pulse")
+volwidget = wibox.layout.margin(volwidget)
+volwidget:set_top(5)
+volwidget:set_bottom(6)
+
 
 --cpu widget
 cpuimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/cpu.png")
 cpuimg:set_resize(false)
-cpuwidget = wibox.widget.textbox()
-vicious.register(cpuwidget, vicious.widgets.cpu, "$2% $3% $4% $5%")
-cpuwidget = wibox.layout.constraint(cpuwidget, "exact", 96, nil)
 
+-- CPU ALL
+local cpu_bar_width = 3
+local cpu_bar_color = "#a1a1a1"
+local cpu_bar_background_color = "#353535"
+vicious.cache(vicious.widgets.cpu)
+
+cpuwidget1 = awful.widget.progressbar() --wibox.widget.textbox()
+cpuwidget1:set_vertical(true)
+cpuwidget1:set_width(cpu_bar_width)
+--cpuwidget1:set_border_color("#a1a1a1")
+cpuwidget1:set_color(cpu_bar_color)
+cpuwidget1:set_background_color(cpu_bar_background_color)
+vicious.register(cpuwidget1, vicious.widgets.cpu, "$2")
+cpuwidget1 = wibox.layout.margin(cpuwidget1)
+cpuwidget1:set_right(2)
+cpuwidget1:set_top(5)
+cpuwidget1:set_bottom(6)
+
+cpuwidget2 = awful.widget.progressbar() --wibox.widget.textbox()
+cpuwidget2:set_vertical(true)
+cpuwidget2:set_width(cpu_bar_width)
+--cpuwidget2:set_border_color("#a1a1a1")
+cpuwidget2:set_color(cpu_bar_color)
+cpuwidget2:set_background_color(cpu_bar_background_color)
+vicious.register(cpuwidget2, vicious.widgets.cpu, "$3")
+cpuwidget2 = wibox.layout.margin(cpuwidget2)
+cpuwidget2:set_right(2)
+cpuwidget2:set_top(5)
+cpuwidget2:set_bottom(6)
+
+cpuwidget3 = awful.widget.progressbar() --wibox.widget.textbox()
+cpuwidget3:set_vertical(true)
+cpuwidget3:set_width(cpu_bar_width)
+--cpuwidget3:set_border_color("#a1a1a1")
+cpuwidget3:set_color(cpu_bar_color)
+cpuwidget3:set_background_color(cpu_bar_background_color)
+vicious.register(cpuwidget3, vicious.widgets.cpu, "$4")
+cpuwidget3 = wibox.layout.margin(cpuwidget3)
+cpuwidget3:set_right(2)
+cpuwidget3:set_top(5)
+cpuwidget3:set_bottom(6)
+
+cpuwidget4 = awful.widget.progressbar() --wibox.widget.textbox()
+cpuwidget4:set_vertical(true)
+cpuwidget4:set_width(cpu_bar_width)
+--cpuwidget4:set_border_color("#a1a1a1")
+cpuwidget4:set_color(cpu_bar_color)
+cpuwidget4:set_background_color(cpu_bar_background_color)
+vicious.register(cpuwidget4, vicious.widgets.cpu, "$5")
+cpuwidget4 = wibox.layout.margin(cpuwidget4)
+cpuwidget4:set_top(5)
+cpuwidget4:set_bottom(6)
 
 -- fs
 fsimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/disk.png")
@@ -177,8 +253,7 @@ vicious.register(fswidget, vicious.widgets.fs, "${/ avail_gb} GB")
 fswidget = wibox.layout.constraint(fswidget, "exact", 42, nil)
 
 
-sep = wibox.widget.textbox()
-sep:set_text(" ")
+sep = wibox.widget.textbox(" ") --wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/sep.png")
 
 sepalt = wibox.widget.textbox()
 sepalt:set_text("")
@@ -278,15 +353,20 @@ for s = 1, screen.count() do
    right_layout:add(sep)
    right_layout:add(cpuimg)
    right_layout:add(sep)
-   right_layout:add(cpuwidget)
+   right_layout:add(cpuwidget1)
+   right_layout:add(cpuwidget2)
+   right_layout:add(cpuwidget3)
+   right_layout:add(cpuwidget4)
    right_layout:add(sep)
-   right_layout:add(batimg)
-   right_layout:add(sep)
-   right_layout:add(batwidget)
    right_layout:add(sep)
    right_layout:add(memimg)
    right_layout:add(sep)
    right_layout:add(memwidget)
+   right_layout:add(sep)
+   right_layout:add(sep)
+   right_layout:add(batimg)
+   right_layout:add(sep)
+   right_layout:add(batwidget)
    right_layout:add(sepalt)
    right_layout:add(mytextclock)
    right_layout:add(mylayoutbox[s])
