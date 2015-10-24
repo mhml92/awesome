@@ -129,7 +129,7 @@ memimg:set_resize(false)
 
 memwidget = awful.widget.progressbar() --wibox.widget.textbox()
 memwidget:set_vertical(true)
-memwidget:set_width(3)
+memwidget:set_width(2)
 --memwidget:set_border_color("#a1a1a1")
 memwidget:set_color("#a1a1a1")
 memwidget:set_background_color("#353535")
@@ -153,7 +153,7 @@ vicious.register(
    30, 
    "BAT0"
 )
-batwidget = wibox.layout.constraint(batwidget, "exact", 25, nil)
+--batwidget = wibox.layout.constraint(batwidget, "exact", 25, nil)
 
 -- net
 netimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/net.png")
@@ -164,7 +164,7 @@ vicious.register(
    vicious.widgets.net, 
    '${wlan0 down_mb}/${wlan0 up_mb}'
 )
-netwidget = wibox.layout.constraint(netwidget, "exact", 45, nil)
+--netwidget = wibox.layout.constraint(netwidget, "exact", 45, nil)
 
 --volume
 
@@ -193,9 +193,12 @@ cpuimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/cpu.png")
 cpuimg:set_resize(false)
 
 -- CPU ALL
-local cpu_bar_width = 3
+local cpu_bar_width = 2
 local cpu_bar_color = "#a1a1a1"
 local cpu_bar_background_color = "#353535"
+local cpu_bar_margin_right = 2
+local cpu_bar_margin_top = 5
+local cpu_bar_margin_bottom = 6
 vicious.cache(vicious.widgets.cpu)
 
 cpuwidget1 = awful.widget.progressbar() --wibox.widget.textbox()
@@ -206,9 +209,9 @@ cpuwidget1:set_color(cpu_bar_color)
 cpuwidget1:set_background_color(cpu_bar_background_color)
 vicious.register(cpuwidget1, vicious.widgets.cpu, "$2")
 cpuwidget1 = wibox.layout.margin(cpuwidget1)
-cpuwidget1:set_right(2)
-cpuwidget1:set_top(5)
-cpuwidget1:set_bottom(6)
+cpuwidget1:set_right(cpu_bar_margin_right)
+cpuwidget1:set_top(cpu_bar_margin_top)
+cpuwidget1:set_bottom(cpu_bar_margin_bottom)
 
 cpuwidget2 = awful.widget.progressbar() --wibox.widget.textbox()
 cpuwidget2:set_vertical(true)
@@ -218,9 +221,9 @@ cpuwidget2:set_color(cpu_bar_color)
 cpuwidget2:set_background_color(cpu_bar_background_color)
 vicious.register(cpuwidget2, vicious.widgets.cpu, "$3")
 cpuwidget2 = wibox.layout.margin(cpuwidget2)
-cpuwidget2:set_right(2)
-cpuwidget2:set_top(5)
-cpuwidget2:set_bottom(6)
+cpuwidget2:set_right(cpu_bar_margin_right)
+cpuwidget2:set_top(cpu_bar_margin_top)
+cpuwidget2:set_bottom(cpu_bar_margin_bottom)
 
 cpuwidget3 = awful.widget.progressbar() --wibox.widget.textbox()
 cpuwidget3:set_vertical(true)
@@ -230,9 +233,9 @@ cpuwidget3:set_color(cpu_bar_color)
 cpuwidget3:set_background_color(cpu_bar_background_color)
 vicious.register(cpuwidget3, vicious.widgets.cpu, "$4")
 cpuwidget3 = wibox.layout.margin(cpuwidget3)
-cpuwidget3:set_right(2)
-cpuwidget3:set_top(5)
-cpuwidget3:set_bottom(6)
+cpuwidget3:set_right(cpu_bar_margin_right)
+cpuwidget3:set_top(cpu_bar_margin_top)
+cpuwidget3:set_bottom(cpu_bar_margin_bottom)
 
 cpuwidget4 = awful.widget.progressbar() --wibox.widget.textbox()
 cpuwidget4:set_vertical(true)
@@ -242,21 +245,38 @@ cpuwidget4:set_color(cpu_bar_color)
 cpuwidget4:set_background_color(cpu_bar_background_color)
 vicious.register(cpuwidget4, vicious.widgets.cpu, "$5")
 cpuwidget4 = wibox.layout.margin(cpuwidget4)
-cpuwidget4:set_top(5)
-cpuwidget4:set_bottom(6)
+cpuwidget4:set_top(cpu_bar_margin_top)
+cpuwidget4:set_bottom(cpu_bar_margin_bottom)
 
 -- fs
 fsimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/disk.png")
 fsimg:set_resize(false)
 fswidget = wibox.widget.textbox()
 vicious.register(fswidget, vicious.widgets.fs, "${/ avail_gb} GB")
-fswidget = wibox.layout.constraint(fswidget, "exact", 42, nil)
+--fswidget = wibox.layout.constraint(fswidget, "exact", 42, nil)
 
 
-sep = wibox.widget.textbox(" ") --wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/sep.png")
+sep = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/sep.png")
+sep:set_resize(false)
+sep = wibox.layout.margin(sep)
+sep:set_top(cpu_bar_margin_top-2)
+sep:set_bottom(cpu_bar_margin_bottom-2)
+
+
+sep_left = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/sep_left.png")
+sep_left:set_resize(false)
+sep_left = wibox.layout.margin(sep_left)
+sep_left:set_top(cpu_bar_margin_top-2)
+sep_left:set_bottom(cpu_bar_margin_bottom-2)
+
+sep_right = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/sep_right.png")
+sep_right:set_resize(false)
+sep_right = wibox.layout.margin(sep_right)
+sep_right:set_top(cpu_bar_margin_top-2)
+sep_right:set_bottom(cpu_bar_margin_bottom-2)
 
 sepalt = wibox.widget.textbox()
-sepalt:set_text("")
+sepalt:set_text(" ")
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -338,36 +358,74 @@ for s = 1, screen.count() do
    local right_layout = wibox.layout.fixed.horizontal()
    if s == 1 then right_layout:add(wibox.widget.systray()) end
    
-   right_layout:add(sep)
+   right_layout:add(sepalt)
+   right_layout:add(sep_left)
+   right_layout:add(sepalt)
    right_layout:add(fsimg)
-   right_layout:add(sep)
+   right_layout:add(sepalt)
    right_layout:add(fswidget)
-   right_layout:add(sep)
+
+   right_layout:add(sepalt)
+   right_layout:add(sep_right)
+   right_layout:add(sepalt)
+   right_layout:add(sepalt)
+   right_layout:add(sep_left)
+   right_layout:add(sepalt)
+
    right_layout:add(volimg)
-   right_layout:add(sep)
+   right_layout:add(sepalt)
    right_layout:add(volwidget)
-   right_layout:add(sep)
+
+   right_layout:add(sepalt)
+   right_layout:add(sep_right)
+   right_layout:add(sepalt)
+   right_layout:add(sepalt)
+   right_layout:add(sep_left)
+   right_layout:add(sepalt)
+
    right_layout:add(netimg)
-   right_layout:add(sep)
+   right_layout:add(sepalt)
    right_layout:add(netwidget)
-   right_layout:add(sep)
+
+   right_layout:add(sepalt)
+   right_layout:add(sep_right)
+   right_layout:add(sepalt)
+   right_layout:add(sepalt)
+   right_layout:add(sep_left)
+   right_layout:add(sepalt)
+
    right_layout:add(cpuimg)
-   right_layout:add(sep)
+   right_layout:add(sepalt)
    right_layout:add(cpuwidget1)
    right_layout:add(cpuwidget2)
    right_layout:add(cpuwidget3)
    right_layout:add(cpuwidget4)
-   right_layout:add(sep)
-   right_layout:add(sep)
+
+   right_layout:add(sepalt)
+   right_layout:add(sep_right)
+   right_layout:add(sepalt)
+   right_layout:add(sepalt)
+   right_layout:add(sep_left)
+   right_layout:add(sepalt)
+
    right_layout:add(memimg)
-   right_layout:add(sep)
+   right_layout:add(sepalt)
    right_layout:add(memwidget)
-   right_layout:add(sep)
-   right_layout:add(sep)
+
+   right_layout:add(sepalt)
+   right_layout:add(sep_right)
+   right_layout:add(sepalt)
+   right_layout:add(sepalt)
+   right_layout:add(sep_left)
+   right_layout:add(sepalt)
+
    right_layout:add(batimg)
-   right_layout:add(sep)
+   right_layout:add(sepalt)
    right_layout:add(batwidget)
    right_layout:add(sepalt)
+   right_layout:add(sep_right)
+   right_layout:add(sepalt)
+
    right_layout:add(mytextclock)
    right_layout:add(mylayoutbox[s])
 
