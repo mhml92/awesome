@@ -7,7 +7,7 @@ theme = {}
 
 theme.font          = "mono 8"
 
-theme.bg_normal     = "#222222"
+theme.bg_normal     = "#2d2d2d"
 theme.bg_focus      = "#535d6c"
 theme.bg_urgent     = "#ff0000"
 theme.bg_minimize   = "#444444"
@@ -19,7 +19,8 @@ theme.fg_urgent     = "#ffffff"
 theme.fg_minimize   = "#ffffff"
 
 theme.border_width  = 1
-theme.border_normal = "#000000"
+--theme.border_normal = "#000000"
+theme.border_normal = "#1a1a1a"
 theme.border_focus  = "#535d6c"
 theme.border_marked = "#91231c"
 
