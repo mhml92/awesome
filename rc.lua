@@ -11,6 +11,7 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local vicious = require("vicious")
+local treesome = require("treesome")
 
 -- Load Debian menu entries
 require("debian.menu")
@@ -41,9 +42,21 @@ end
 -- }}}
 
 -- {{{ Variable definitions
+
+-- home folder
+local HOME = os.getenv("HOME")
+
+local bar_width = 2
+local bar_color = "#a1a1a1"
+local bar_background_color = "#474747"--"#353535"
+local bar_margin_right = 2
+local bar_margin_top = 5
+local bar_margin_bottom = 6
+
+
 -- Themes define colours, icons, font and wallpapers.
 --beautiful.init("/usr/share/awesome/themes/zenburn/theme.lua")
-beautiful.init("/home/mikkel/.config/awesome/customtheme/theme.lua")
+beautiful.init(HOME .. "/.config/awesome/customtheme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "x-terminal-emulator"
@@ -58,20 +71,20 @@ editor_cmd = terminal .. " -e " .. editor
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
-local layouts =
-{
+local layouts = {
    awful.layout.suit.tile,
    awful.layout.suit.tile.left,
    awful.layout.suit.tile.bottom,
    awful.layout.suit.tile.top,
    awful.layout.suit.floating,
---   awful.layout.suit.fair,
---   awful.layout.suit.fair.horizontal,
---   awful.layout.suit.spiral,
---   awful.layout.suit.spiral.dwindle,
---   awful.layout.suit.max,
---   awful.layout.suit.max.fullscreen,
---   awful.layout.suit.magnifier,
+   --treesome
+   --   awful.layout.suit.fair,
+   --   awful.layout.suit.fair.horizontal,
+   --   awful.layout.suit.spiral,
+   --   awful.layout.suit.spiral.dwindle,
+   --   awful.layout.suit.max,
+   --   awful.layout.suit.max.fullscreen,
+   --   awful.layout.suit.magnifier,
 }
 -- }}}
 
@@ -123,157 +136,124 @@ mytextclock = awful.widget.textclock()
 
 
 -- memory usage
-memimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/mem.png")
+memimg = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/mem.png")
 memimg:set_resize(false)
 
-
-memwidget = awful.widget.progressbar() --wibox.widget.textbox()
-memwidget:set_vertical(true)
-memwidget:set_width(2)
---memwidget:set_border_color("#a1a1a1")
-memwidget:set_color("#a1a1a1")
-memwidget:set_background_color("#353535")
-vicious.register(memwidget, vicious.widgets.mem, "$1")
-memwidget = wibox.layout.margin(memwidget)
-memwidget:set_top(5)
-memwidget:set_bottom(6)
-
---memwidget = wibox.widget.textbox()
---vicious.register(memwidget, vicious.widgets.mem, "$1%")
---memwidget = wibox.layout.constraint(memwidget, "exact", 20, nil)
+memwidget = wibox.widget.textbox()
+vicious.register(memwidget, vicious.widgets.mem, "$1%",30)
 
 -- battery
-batimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/bat_empty_01.png")
+batimg = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/bat_empty_01.png")
 batimg:set_resize(false)
 batwidget = wibox.widget.textbox()
 vicious.register(
-   batwidget, 
-   vicious.widgets.bat, 
-   '$2%', 
-   30, 
-   "BAT0"
+batwidget, 
+vicious.widgets.bat, 
+'$2%', 
+60, 
+"BAT0"
 )
 --batwidget = wibox.layout.constraint(batwidget, "exact", 25, nil)
 
 -- net
-netimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/net.png")
+netimg = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/net.png")
 netimg:set_resize(false)
 netwidget = wibox.widget.textbox()
+vicious.cache(vicious.widgets.net)
 vicious.register(
    netwidget, 
    vicious.widgets.net, 
    '${wlan0 down_mb}/${wlan0 up_mb}'
 )
---netwidget = wibox.layout.constraint(netwidget, "exact", 45, nil)
 
 --volume
-
-volimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/spkr_01.png")
+volimg = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/spkr_01.png")
 volimg:set_resize(false)
 
---volwidget = wibox.widget.textbox()
---vicious.register(volwidget, vicious.widgets.volume, "$1%",1, "Master -D pulse")
---volwidget = wibox.layout.constraint(volwidget, "exact", 25, nil)
-
-
-volwidget = awful.widget.progressbar() --wibox.widget.textbox()
-volwidget:set_vertical(true)
-volwidget:set_width(3)
---volwidget:set_border_color("#a1a1a1")
-volwidget:set_color("#a1a1a1")
-volwidget:set_background_color("#353535")
-vicious.register(volwidget, vicious.widgets.volume, "$1",1, "Master -D pulse")
-volwidget = wibox.layout.margin(volwidget)
-volwidget:set_top(5)
-volwidget:set_bottom(6)
+volwidget = wibox.widget.textbox()
+vicious.register(volwidget, vicious.widgets.volume, "$1%",2, "Master -D pulse")
 
 
 --cpu widget
-cpuimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/cpu.png")
+cpuimg = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/cpu.png")
 cpuimg:set_resize(false)
 
 -- CPU ALL
-local cpu_bar_width = 2
-local cpu_bar_color = "#a1a1a1"
-local cpu_bar_background_color = "#353535"
-local cpu_bar_margin_right = 2
-local cpu_bar_margin_top = 5
-local cpu_bar_margin_bottom = 6
 vicious.cache(vicious.widgets.cpu)
 
 cpuwidget1 = awful.widget.progressbar() --wibox.widget.textbox()
 cpuwidget1:set_vertical(true)
-cpuwidget1:set_width(cpu_bar_width)
+cpuwidget1:set_width(bar_width)
 --cpuwidget1:set_border_color("#a1a1a1")
-cpuwidget1:set_color(cpu_bar_color)
-cpuwidget1:set_background_color(cpu_bar_background_color)
+cpuwidget1:set_color(bar_color)
+cpuwidget1:set_background_color(bar_background_color)
 vicious.register(cpuwidget1, vicious.widgets.cpu, "$2")
 cpuwidget1 = wibox.layout.margin(cpuwidget1)
-cpuwidget1:set_right(cpu_bar_margin_right)
-cpuwidget1:set_top(cpu_bar_margin_top)
-cpuwidget1:set_bottom(cpu_bar_margin_bottom)
+cpuwidget1:set_right(bar_margin_right)
+cpuwidget1:set_top(bar_margin_top)
+cpuwidget1:set_bottom(bar_margin_bottom)
 
 cpuwidget2 = awful.widget.progressbar() --wibox.widget.textbox()
 cpuwidget2:set_vertical(true)
-cpuwidget2:set_width(cpu_bar_width)
+cpuwidget2:set_width(bar_width)
 --cpuwidget2:set_border_color("#a1a1a1")
-cpuwidget2:set_color(cpu_bar_color)
-cpuwidget2:set_background_color(cpu_bar_background_color)
+cpuwidget2:set_color(bar_color)
+cpuwidget2:set_background_color(bar_background_color)
 vicious.register(cpuwidget2, vicious.widgets.cpu, "$3")
 cpuwidget2 = wibox.layout.margin(cpuwidget2)
-cpuwidget2:set_right(cpu_bar_margin_right)
-cpuwidget2:set_top(cpu_bar_margin_top)
-cpuwidget2:set_bottom(cpu_bar_margin_bottom)
+cpuwidget2:set_right(bar_margin_right)
+cpuwidget2:set_top(bar_margin_top)
+cpuwidget2:set_bottom(bar_margin_bottom)
 
 cpuwidget3 = awful.widget.progressbar() --wibox.widget.textbox()
 cpuwidget3:set_vertical(true)
-cpuwidget3:set_width(cpu_bar_width)
+cpuwidget3:set_width(bar_width)
 --cpuwidget3:set_border_color("#a1a1a1")
-cpuwidget3:set_color(cpu_bar_color)
-cpuwidget3:set_background_color(cpu_bar_background_color)
+cpuwidget3:set_color(bar_color)
+cpuwidget3:set_background_color(bar_background_color)
 vicious.register(cpuwidget3, vicious.widgets.cpu, "$4")
 cpuwidget3 = wibox.layout.margin(cpuwidget3)
-cpuwidget3:set_right(cpu_bar_margin_right)
-cpuwidget3:set_top(cpu_bar_margin_top)
-cpuwidget3:set_bottom(cpu_bar_margin_bottom)
+cpuwidget3:set_right(bar_margin_right)
+cpuwidget3:set_top(bar_margin_top)
+cpuwidget3:set_bottom(bar_margin_bottom)
 
 cpuwidget4 = awful.widget.progressbar() --wibox.widget.textbox()
 cpuwidget4:set_vertical(true)
-cpuwidget4:set_width(cpu_bar_width)
+cpuwidget4:set_width(bar_width)
 --cpuwidget4:set_border_color("#a1a1a1")
-cpuwidget4:set_color(cpu_bar_color)
-cpuwidget4:set_background_color(cpu_bar_background_color)
+cpuwidget4:set_color(bar_color)
+cpuwidget4:set_background_color(bar_background_color)
 vicious.register(cpuwidget4, vicious.widgets.cpu, "$5")
 cpuwidget4 = wibox.layout.margin(cpuwidget4)
-cpuwidget4:set_top(cpu_bar_margin_top)
-cpuwidget4:set_bottom(cpu_bar_margin_bottom)
+cpuwidget4:set_top(bar_margin_top)
+cpuwidget4:set_bottom(bar_margin_bottom)
 
 -- fs
-fsimg = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/disk.png")
+fsimg = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/disk.png")
 fsimg:set_resize(false)
 fswidget = wibox.widget.textbox()
-vicious.register(fswidget, vicious.widgets.fs, "${/ avail_gb} GB")
+vicious.register(fswidget, vicious.widgets.fs, "${/ avail_gb} GB",60)
 --fswidget = wibox.layout.constraint(fswidget, "exact", 42, nil)
 
 
-sep = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/sep.png")
+sep = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/sep.png")
 sep:set_resize(false)
 sep = wibox.layout.margin(sep)
-sep:set_top(cpu_bar_margin_top-2)
-sep:set_bottom(cpu_bar_margin_bottom-2)
+sep:set_top(bar_margin_top-2)
+sep:set_bottom(bar_margin_bottom-2)
 
 
-sep_left = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/sep_left.png")
+sep_left = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/sep_left.png")
 sep_left:set_resize(false)
 sep_left = wibox.layout.margin(sep_left)
-sep_left:set_top(cpu_bar_margin_top-2)
-sep_left:set_bottom(cpu_bar_margin_bottom-2)
+sep_left:set_top(bar_margin_top-2)
+sep_left:set_bottom(bar_margin_bottom-2)
 
-sep_right = wibox.widget.imagebox("/home/mikkel/.config/awesome/myicons/sep_right.png")
+sep_right = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/sep_right.png")
 sep_right:set_resize(false)
 sep_right = wibox.layout.margin(sep_right)
-sep_right:set_top(cpu_bar_margin_top-2)
-sep_right:set_bottom(cpu_bar_margin_bottom-2)
+sep_right:set_top(bar_margin_top-2)
+sep_right:set_bottom(bar_margin_bottom-2)
 
 sepalt = wibox.widget.textbox()
 sepalt:set_text(" ")
@@ -357,7 +337,7 @@ for s = 1, screen.count() do
    -- Widgets that are aligned to the right
    local right_layout = wibox.layout.fixed.horizontal()
    if s == 1 then right_layout:add(wibox.widget.systray()) end
-   
+
    right_layout:add(sepalt)
    right_layout:add(sep_left)
    right_layout:add(sepalt)
@@ -449,85 +429,85 @@ awful.button({ }, 5, awful.tag.viewprev)
 
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
-   awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
-   awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
-   awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
+awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
+awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
+awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
-   awful.key({ modkey,           }, "j",
-   function ()
-      awful.client.focus.byidx( 1)
-      if client.focus then client.focus:raise() end
-   end),
-   awful.key({ modkey,           }, "k",
-   function ()
-      awful.client.focus.byidx(-1)
-      if client.focus then client.focus:raise() end
-   end),
-   awful.key({ modkey,           }, "w", function () mymainmenu:show() end),
+awful.key({ modkey,           }, "j",
+function ()
+   awful.client.focus.byidx( 1)
+   if client.focus then client.focus:raise() end
+end),
+awful.key({ modkey,           }, "k",
+function ()
+   awful.client.focus.byidx(-1)
+   if client.focus then client.focus:raise() end
+end),
+awful.key({ modkey,           }, "w", function () mymainmenu:show() end),
 
-   -- Layout manipulation
-   awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
-   awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
-   awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
-   awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
-   awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
-   awful.key({ modkey,           }, "Tab",
-   function ()
-      awful.client.focus.history.previous()
-      if client.focus then
-         client.focus:raise()
-      end
-   end),
+-- Layout manipulation
+awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end),
+awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
+awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
+awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
+awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
+awful.key({ modkey,           }, "Tab",
+function ()
+   awful.client.focus.history.previous()
+   if client.focus then
+      client.focus:raise()
+   end
+end),
 
-   -- Standard program
-   awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
-   awful.key({ modkey, "Control" }, "r", awesome.restart),
-   awful.key({ modkey, "Shift"   }, "q", awesome.quit),
+-- Standard program
+awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
+awful.key({ modkey, "Control" }, "r", awesome.restart),
+awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
-   awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
-   awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
-   awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1)      end),
-   awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
-   awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
-   awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
-   awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
-   awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
+awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
+awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)    end),
+awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1)      end),
+awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
+awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
+awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
+awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
+awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
 
-   awful.key({ modkey, "Control" }, "n", awful.client.restore),
+awful.key({ modkey, "Control" }, "n", awful.client.restore),
 
-   -- Prompt
-   awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
+-- Prompt
+awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
-   awful.key({ modkey }, "x",
-   function ()
-      awful.prompt.run({ prompt = "Run Lua code: " },
-      mypromptbox[mouse.screen].widget,
-      awful.util.eval, nil,
-      awful.util.getdir("cache") .. "/history_eval")
-   end),
-   -- Menubar
-   awful.key({ modkey }, "p", function() menubar.show() end),
-   -- volume
-   awful.key({ }, "XF86AudioRaiseVolume", function ()
-      awful.util.spawn("amixer -D pulse set Master 10%+", false) 
-      awful.util.spawn("paplay /home/mikkel/.config/awesome/sound/beep.ogg", false) 
-   end),
-   awful.key({ }, "XF86AudioLowerVolume", function ()
-      awful.util.spawn("amixer -D pulse set Master 10%-", false) 
-      awful.util.spawn("paplay /home/mikkel/.config/awesome/sound/beep.ogg", false) 
-   end),
-   awful.key({ }, "XF86AudioMute", function ()
-      awful.util.spawn("amixer -D pulse set Master 1+ toggle", false) 
-      awful.util.spawn("paplay /home/mikkel/.config/awesome/sound/beep.ogg", false) 
-      awful.util.spawn("paplay /home/mikkel/.config/awesome/sound/beep.ogg", false) 
-   end),
-   -- screen brightness
-   awful.key({ }, "XF86MonBrightnessDown", function ()
-      awful.util.spawn("xbacklight -dec 10") 
-   end),
-   awful.key({ }, "XF86MonBrightnessUp", function ()
-      awful.util.spawn("xbacklight -inc 10") 
-   end)
+awful.key({ modkey }, "x",
+function ()
+   awful.prompt.run({ prompt = "Run Lua code: " },
+   mypromptbox[mouse.screen].widget,
+   awful.util.eval, nil,
+   awful.util.getdir("cache") .. "/history_eval")
+end),
+-- Menubar
+awful.key({ modkey }, "p", function() menubar.show() end),
+-- volume
+awful.key({ }, "XF86AudioRaiseVolume", function ()
+   awful.util.spawn("amixer -D pulse set Master 10%+", false) 
+   awful.util.spawn("paplay /home/mikkel/.config/awesome/sound/beep.ogg", false) 
+end),
+awful.key({ }, "XF86AudioLowerVolume", function ()
+   awful.util.spawn("amixer -D pulse set Master 10%-", false) 
+   awful.util.spawn("paplay /home/mikkel/.config/awesome/sound/beep.ogg", false) 
+end),
+awful.key({ }, "XF86AudioMute", function ()
+   awful.util.spawn("amixer -D pulse set Master 1+ toggle", false) 
+   awful.util.spawn("paplay /home/mikkel/.config/awesome/sound/beep.ogg", false) 
+   awful.util.spawn("paplay /home/mikkel/.config/awesome/sound/beep.ogg", false) 
+end),
+-- screen brightness
+awful.key({ }, "XF86MonBrightnessDown", function ()
+   awful.util.spawn("xbacklight -dec 10") 
+end),
+awful.key({ }, "XF86MonBrightnessUp", function ()
+   awful.util.spawn("xbacklight -inc 10") 
+end)
 )
 
 clientkeys = awful.util.table.join(
@@ -714,4 +694,4 @@ run_once("nm-applet")
 -- horizontal scrolling
 run_once("gnome-settings-daemon")
 -- dropbox
-run_once("/home/mikkel/.dropbox-dist/dropboxd")
+run_once(HOME .. "/.dropbox-dist/dropboxd")
