@@ -11,7 +11,7 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local vicious = require("vicious")
-local treesome = require("treesome")
+--local treesome = require("treesome")
 
 -- Load Debian menu entries
 require("debian.menu")
@@ -117,9 +117,11 @@ myawesomemenu = {
 
 mymainmenu = awful.menu({ 
    items = { 
-      { "awesome", myawesomemenu, beautiful.awesome_icon },
+      {"Thunar","thunar"},
+      {"Chrome","google-chrome"},
       { "Debian", debian.menu.Debian_menu.Debian },
-      { "open terminal", terminal }
+      { "open terminal", terminal },
+      { "awesome", myawesomemenu, beautiful.awesome_icon }
    }
 })
 
@@ -232,7 +234,7 @@ cpuwidget4:set_bottom(bar_margin_bottom)
 fsimg = wibox.widget.imagebox(HOME .. "/.config/awesome/myicons/disk.png")
 fsimg:set_resize(false)
 fswidget = wibox.widget.textbox()
-vicious.register(fswidget, vicious.widgets.fs, "${/ avail_gb} GB",60)
+vicious.register(fswidget, vicious.widgets.fs, "${/ avail_gb} GB",1)
 --fswidget = wibox.layout.constraint(fswidget, "exact", 42, nil)
 
 
@@ -503,10 +505,10 @@ awful.key({ }, "XF86AudioMute", function ()
 end),
 -- screen brightness
 awful.key({ }, "XF86MonBrightnessDown", function ()
-   awful.util.spawn("xbacklight -dec 10") 
+   awful.util.spawn("xbacklight -dec 10 -time 0") 
 end),
 awful.key({ }, "XF86MonBrightnessUp", function ()
-   awful.util.spawn("xbacklight -inc 10") 
+   awful.util.spawn("xbacklight -inc 10 -time 0") 
 end)
 )
 
@@ -689,9 +691,20 @@ function run_once(cmd)
    end
    awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
 end
+
+
+-- screen temperatur calibrator
+run_once("redshift-gtk")
+
+
 -- network manager
 run_once("nm-applet")
+
 -- horizontal scrolling
 run_once("gnome-settings-daemon")
+
+-- nvidia indicator
+--run_once("prime-indicator")
+
 -- dropbox
 run_once(HOME .. "/.dropbox-dist/dropboxd")
